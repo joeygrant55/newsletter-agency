@@ -1,0 +1,404 @@
+[
+    {
+        "id": "asst_1Xcwcvm1ccBMsnrCBdqxReUH",
+        "created_at": 1738124784,
+        "description": "Responsible for overseeing newsletter production and final approval",
+        "instructions": "./agency_manifesto.md\n\n# Agent Role\nCEO Agent oversees the entire newsletter production process, from research to distribution.\n\n# Goals\n1. Review and approve content quality\n2. Coordinate between research, content creation, and distribution teams\n3. Ensure newsletter maintains high standards and meets objectives\n\n# Process Workflow\n1. Review research findings from Research Agent\n2. Approve content direction from Content Creation Agent\n3. Oversee final distribution through Distribution Agent\n4. Provide feedback and direction to team members\n5. Make final decisions on newsletter content and timing ",
+        "metadata": {},
+        "model": "gpt-4o-2024-08-06",
+        "name": "CEO",
+        "object": "assistant",
+        "tools": [
+            {
+                "function": {
+                    "name": "ContentApprovalTool",
+                    "description": "Manages user approval process for newsletter content and strategy decisions.\nFacilitates human-in-the-loop validation at critical workflow stages.",
+                    "parameters": {
+                        "properties": {
+                            "approval_prompt": {
+                                "description": "Specific item requiring user approval (e.g., topic list, draft content)",
+                                "title": "Approval Prompt",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "approval_prompt"
+                        ],
+                        "type": "object"
+                    },
+                    "strict": false
+                },
+                "type": "function"
+            },
+            {
+                "function": {
+                    "name": "SendMessage",
+                    "description": "Correctly extracted `SendMessage` with all the required parameters with correct types",
+                    "parameters": {
+                        "$defs": {
+                            "recipient": {
+                                "enum": [
+                                    "Research",
+                                    "Content Creator",
+                                    "Distribution"
+                                ],
+                                "title": "recipient",
+                                "type": "string"
+                            }
+                        },
+                        "properties": {
+                            "recipient": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/$defs/recipient"
+                                    }
+                                ],
+                                "description": "Research: Researches and analyzes sports tech trends\nContent Creator: Creates engaging newsletter content from research\nDistribution: Handles newsletter distribution and delivery\n"
+                            },
+                            "my_primary_instructions": {
+                                "description": "Please repeat your primary instructions step-by-step, including both completed and the following next steps that you need to perform. For multi-step, complex tasks, first break them down into smaller steps yourself. Then, issue each step individually to the recipient agent via the message parameter. Each identified step should be sent in a separate message. Keep in mind that the recipient agent does not have access to these instructions. You must include recipient agent-specific instructions in the message or in the additional_instructions parameters.",
+                                "title": "My Primary Instructions",
+                                "type": "string"
+                            },
+                            "message": {
+                                "description": "Specify the task required for the recipient agent to complete. Focus on clarifying what the task entails, rather than providing exact instructions. Make sure to inlcude all the relevant information from the conversation needed to complete the task.",
+                                "title": "Message",
+                                "type": "string"
+                            },
+                            "message_files": {
+                                "anyOf": [
+                                    {
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "type": "array"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "description": "A list of file IDs to be sent as attachments to this message. Only use this if you have the file ID that starts with 'file-'.",
+                                "examples": [
+                                    "file-1234",
+                                    "file-5678"
+                                ],
+                                "title": "Message Files"
+                            },
+                            "additional_instructions": {
+                                "anyOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "description": "Additional context or instructions from the conversation needed by the recipient agent to complete the task.",
+                                "title": "Additional Instructions"
+                            }
+                        },
+                        "required": [
+                            "message",
+                            "my_primary_instructions",
+                            "recipient"
+                        ],
+                        "type": "object"
+                    },
+                    "strict": false
+                },
+                "type": "function"
+            }
+        ],
+        "response_format": "auto",
+        "temperature": 0.3,
+        "tool_resources": {
+            "code_interpreter": null,
+            "file_search": null
+        },
+        "top_p": 1.0,
+        "reasoning_effort": null
+    },
+    {
+        "id": "asst_hkZlhJLs5FAickCHGwyT6sdE",
+        "created_at": 1738124785,
+        "description": "Researches and analyzes sports tech trends",
+        "instructions": "./agency_manifesto.md\n\n# Agent Role\nResearch Agent identifies and analyzes trending topics in sports technology and performance.\n\n# Goals\n1. Identify emerging trends in sports tech\n2. Analyze market data and industry developments\n3. Provide well-researched content recommendations\n\n# Process Workflow\n1. Monitor sports tech news and developments\n2. Analyze trending topics and their relevance\n3. Compile research findings for content team\n4. Validate information accuracy\n5. Share insights with Content Creation Agent ",
+        "metadata": {},
+        "model": "gpt-4o-2024-08-06",
+        "name": "Research",
+        "object": "assistant",
+        "tools": [
+            {
+                "function": {
+                    "name": "TrendAnalysisTool",
+                    "description": "Analyzes cutting-edge technologies and methodologies in athlete development,\ntalent identification, and coaching innovations. Focuses on tools and strategies\nthat enhance performance, recovery, and scouting effectiveness.",
+                    "parameters": {
+                        "properties": {
+                            "topic": {
+                                "description": "Specific area in athlete development (e.g., 'Biomechanics tech', 'Recovery innovations', 'AI scouting tools')",
+                                "title": "Topic",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "topic"
+                        ],
+                        "type": "object"
+                    },
+                    "strict": false
+                },
+                "type": "function"
+            },
+            {
+                "function": {
+                    "name": "SendMessage",
+                    "description": "Correctly extracted `SendMessage` with all the required parameters with correct types",
+                    "parameters": {
+                        "$defs": {
+                            "recipient": {
+                                "const": "Content Creator",
+                                "enum": [
+                                    "Content Creator"
+                                ],
+                                "title": "recipient",
+                                "type": "string"
+                            }
+                        },
+                        "properties": {
+                            "recipient": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/$defs/recipient"
+                                    }
+                                ],
+                                "description": "Content Creator: Creates engaging newsletter content from research\n"
+                            },
+                            "my_primary_instructions": {
+                                "description": "Please repeat your primary instructions step-by-step, including both completed and the following next steps that you need to perform. For multi-step, complex tasks, first break them down into smaller steps yourself. Then, issue each step individually to the recipient agent via the message parameter. Each identified step should be sent in a separate message. Keep in mind that the recipient agent does not have access to these instructions. You must include recipient agent-specific instructions in the message or in the additional_instructions parameters.",
+                                "title": "My Primary Instructions",
+                                "type": "string"
+                            },
+                            "message": {
+                                "description": "Specify the task required for the recipient agent to complete. Focus on clarifying what the task entails, rather than providing exact instructions. Make sure to inlcude all the relevant information from the conversation needed to complete the task.",
+                                "title": "Message",
+                                "type": "string"
+                            },
+                            "message_files": {
+                                "anyOf": [
+                                    {
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "type": "array"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "description": "A list of file IDs to be sent as attachments to this message. Only use this if you have the file ID that starts with 'file-'.",
+                                "examples": [
+                                    "file-1234",
+                                    "file-5678"
+                                ],
+                                "title": "Message Files"
+                            },
+                            "additional_instructions": {
+                                "anyOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "description": "Additional context or instructions from the conversation needed by the recipient agent to complete the task.",
+                                "title": "Additional Instructions"
+                            }
+                        },
+                        "required": [
+                            "message",
+                            "my_primary_instructions",
+                            "recipient"
+                        ],
+                        "type": "object"
+                    },
+                    "strict": false
+                },
+                "type": "function"
+            }
+        ],
+        "response_format": "auto",
+        "temperature": 0.3,
+        "tool_resources": {
+            "code_interpreter": null,
+            "file_search": null
+        },
+        "top_p": 1.0,
+        "reasoning_effort": null
+    },
+    {
+        "id": "asst_HIVsyc3USjRkUPRykeJiH6vM",
+        "created_at": 1738124785,
+        "description": "Creates engaging newsletter content from research",
+        "instructions": "./agency_manifesto.md\n\n# Agent Role\nContent Creation Agent transforms research into engaging newsletter content.\n\n# Goals\n1. Create compelling newsletter content\n2. Maintain consistent voice and style\n3. Optimize content for reader engagement\n\n# Process Workflow\n1. Review research from Research Agent\n2. Draft newsletter content\n3. Structure content for readability\n4. Incorporate relevant examples and data\n5. Submit to CEO for approval\n\n# Content Creation Guidelines\n\n1. For each technical concept:\n   - Find real-world athlete success stories\n   - Identify contrasting viewpoints\n   - Highlight \"Why This Matters Now\"\n   \n2. Structure articles with:\n   - Provocative question opener\n   - Current limitations/challenges\n   - Technology breakthrough\n   - Implementation roadmap\n   - Future implications\n\n3. Always include:\n   - Data visualization prompts\n   - Expert commentary\n   - Training regimen comparisons\n   - Safety/ethical considerations ",
+        "metadata": {},
+        "model": "gpt-4o-2024-08-06",
+        "name": "Content Creator",
+        "object": "assistant",
+        "tools": [
+            {
+                "function": {
+                    "name": "ContentGeneratorTool",
+                    "description": "Generates newsletter content using Anthropic's Claude API. Creates multiple variations\nand optimizes based on performance data.",
+                    "parameters": {
+                        "properties": {
+                            "research_brief": {
+                                "description": "Structured research brief from TrendAnalysisTool",
+                                "title": "Research Brief",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "research_brief"
+                        ],
+                        "type": "object"
+                    },
+                    "strict": false
+                },
+                "type": "function"
+            },
+            {
+                "function": {
+                    "name": "SendMessage",
+                    "description": "Correctly extracted `SendMessage` with all the required parameters with correct types",
+                    "parameters": {
+                        "$defs": {
+                            "recipient": {
+                                "const": "Distribution",
+                                "enum": [
+                                    "Distribution"
+                                ],
+                                "title": "recipient",
+                                "type": "string"
+                            }
+                        },
+                        "properties": {
+                            "recipient": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/$defs/recipient"
+                                    }
+                                ],
+                                "description": "Distribution: Handles newsletter distribution and delivery\n"
+                            },
+                            "my_primary_instructions": {
+                                "description": "Please repeat your primary instructions step-by-step, including both completed and the following next steps that you need to perform. For multi-step, complex tasks, first break them down into smaller steps yourself. Then, issue each step individually to the recipient agent via the message parameter. Each identified step should be sent in a separate message. Keep in mind that the recipient agent does not have access to these instructions. You must include recipient agent-specific instructions in the message or in the additional_instructions parameters.",
+                                "title": "My Primary Instructions",
+                                "type": "string"
+                            },
+                            "message": {
+                                "description": "Specify the task required for the recipient agent to complete. Focus on clarifying what the task entails, rather than providing exact instructions. Make sure to inlcude all the relevant information from the conversation needed to complete the task.",
+                                "title": "Message",
+                                "type": "string"
+                            },
+                            "message_files": {
+                                "anyOf": [
+                                    {
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "type": "array"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "description": "A list of file IDs to be sent as attachments to this message. Only use this if you have the file ID that starts with 'file-'.",
+                                "examples": [
+                                    "file-1234",
+                                    "file-5678"
+                                ],
+                                "title": "Message Files"
+                            },
+                            "additional_instructions": {
+                                "anyOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "description": "Additional context or instructions from the conversation needed by the recipient agent to complete the task.",
+                                "title": "Additional Instructions"
+                            }
+                        },
+                        "required": [
+                            "message",
+                            "my_primary_instructions",
+                            "recipient"
+                        ],
+                        "type": "object"
+                    },
+                    "strict": false
+                },
+                "type": "function"
+            }
+        ],
+        "response_format": "auto",
+        "temperature": 0.3,
+        "tool_resources": {
+            "code_interpreter": null,
+            "file_search": null
+        },
+        "top_p": 1.0,
+        "reasoning_effort": null
+    },
+    {
+        "id": "asst_mof73jPadNvUhmORt3F52uc9",
+        "created_at": 1738124785,
+        "description": "Handles newsletter distribution and delivery",
+        "instructions": "./agency_manifesto.md\n\n# Agent Role\nDistribution Agent handles the final preparation and distribution of the newsletter.\n\n# Goals\n1. Ensure newsletter is properly formatted\n2. Manage distribution timing\n3. Maintain delivery quality\n\n# Process Workflow\n1. Receive approved content from Content Creation Agent\n2. Format content for BeeHiiv platform\n3. Prepare distribution settings\n4. Schedule or execute distribution\n5. Report distribution status to CEO ",
+        "metadata": {},
+        "model": "gpt-4o-2024-08-06",
+        "name": "Distribution",
+        "object": "assistant",
+        "tools": [
+            {
+                "function": {
+                    "name": "DistributionManagerTool",
+                    "description": "Prepares newsletter content for BeeHiiv distribution. Formats content\nand provides instructions for manual posting.",
+                    "parameters": {
+                        "properties": {
+                            "content": {
+                                "description": "Final approved newsletter content to distribute",
+                                "title": "Content",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "content"
+                        ],
+                        "type": "object"
+                    },
+                    "strict": false
+                },
+                "type": "function"
+            }
+        ],
+        "response_format": "auto",
+        "temperature": 0.3,
+        "tool_resources": {
+            "code_interpreter": null,
+            "file_search": null
+        },
+        "top_p": 1.0,
+        "reasoning_effort": null
+    }
+]
